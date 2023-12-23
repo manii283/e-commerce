@@ -1,25 +1,50 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import "./App.css";
+import Product from "./components/Product";
+import ProductContext from "./components/ProductContext";
+import Cart from "./components/Cart";
+import NotFound from "./components/NotFound";
 
-function App() {
+const App = () => {
+  const [cartCount, setCartCount] = useState(0);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [total, setTotal] = useState(0);
+
+  const addToCart = (item) => {
+    setCartCount(cartCount + 1);
+    setSelectedItems([...selectedItems, item]);
+    updateTotal(item.price);
+    console.log(selectedItems);
+  };
+
+  const updateTotal = (itemPrice) => {
+    setTotal(total + itemPrice);
+    console.log(total);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <ProductContext>
+        <Navbar cartCount={cartCount} />
+        <Routes>
+          <Route path="/" element={<Product addToCart={addToCart} />} />
+          <Route
+            excat
+            path="/cart"
+            element={
+              <Cart
+                cartCount={cartCount}
+                selectedItems={selectedItems}
+                total={total}
+              />
+            }
+          />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </ProductContext>
     </div>
   );
-}
-
+};
 export default App;
